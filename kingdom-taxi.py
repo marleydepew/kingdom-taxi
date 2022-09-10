@@ -35,8 +35,8 @@ def send_new_request_email(passengers, date, time, pass_email, driver_email):
         email_server.login(email_config['user'], email_config['password'])
         email_server.send_message(message)
 
-# Sort by date, time and driver in that order.
-def sort_key(obj):
+# Sort rides by date, time and driver in that order.
+def sort_rides(obj):
     return obj[1]+obj[2]+obj[0]
 
 # Create Flask app instance.
@@ -61,11 +61,13 @@ def add_ride():
     time = request.form['time']
     seats = request.form['seats']
     record = (driver, date, time, seats, 0)
+    print(type(date))
+    print(type(time))
     
     # Update the ride table with the new record.
-    con = sqlite3.connect('kingdomtaxi.db')
+    con = sqlite3.connect('kingdom-taxi.db')
     try:
-        con.execute('INSERT INTO ride VALUES (?, ?, ?, ?, ?)', record)
+        con.execute('INSERT INTO rides VALUES (?, ?, ?, ?, ?)', record)
         con.commit()
         
     except sqlite3.Warning as warning:
@@ -79,8 +81,8 @@ def add_ride():
     
     # Get existing rides for driver
     # Redisplay the admin page with driver rides
-    con = sqlite3.connect('kingdomtaxi.db')
-    cur = con.execute('SELECT * FROM ride WHERE driver = ?', (driver,))
+    con = sqlite3.connect('kingdom-taxi.db')
+    cur = con.execute('SELECT * FROM rides WHERE driver = ?', (driver,))
     
     driver_rides = []
     for ride in cur:
@@ -88,15 +90,15 @@ def add_ride():
         
     con.close()
     
-    driver_rides.sort(key=sort_key)
+    driver_rides.sort(key = sort_rides)
     return render_template('admin.html', data = driver_rides)
 
 @app.route('/all-rides', methods = ['POST'])
 def all_rides():
     
     # Get existing rides and reload admin page
-    con = sqlite3.connect('kingdomtaxi.db')
-    cur = con.execute('SELECT * FROM ride')
+    con = sqlite3.connect('kingdom-taxi.db')
+    cur = con.execute('SELECT * FROM rides')
 
     rides = []
     for ride in cur:
@@ -104,7 +106,7 @@ def all_rides():
 
     con.close()
 
-    rides.sort(key=sort_key)
+    rides.sort(key = sort_rides)
     return render_template('admin.html', data = rides)
 
 @app.route('/confirm-request/<email>/<answer>')
@@ -116,19 +118,45 @@ def confirm_request(email, answer):
 def index():
     return render_template('index.html')
 
-@app.route('/rides', methods = ['POST'])
+@app.route('/rides', methods = ['GET'])
 def rides():
     
-    send_new_request_email('2', '2022-08-09', '11:00', recipient, recipient)
+    date = request.args.get('date1')
+    travelers = request.args.get('travelers')
+    query_args = (date, int(travelers))
     
-    resp = make_response(render_template('rides.html'))
+    con = sqlite3.connect('kingdom-taxi.db')
+    cur = con.execute('\
+    SELECT driver, date, time, seats - passengers \
+    FROM rides \
+    WHERE date = ? and (seats - passengers) >= ?', query_args)
     
-    resp.set_cookie('type', request.form['type'])
-    resp.set_cookie('passengers', request.form['passengers'])
-    resp.set_cookie('arrival', request.form['arrival'])
-    resp.set_cookie('departure', request.form['departure'])
+    matching_rides = []
+    for ride in cur:
+        matching_rides.append(ride)
+    matching_rides.sort(key = sort_rides)
+    con.close()
     
-    return resp
+    return render_template('rides.html', data = matching_rides)
+    # resp = make_response(render_template('rides.html'))
+    # resp.set_cookie('type', request.form['type'])
+    # resp.set_cookie('passengers', request.form['passengers'])
+    # resp.set_cookie('arrival', request.form['arrival'])
+    # resp.set_cookie('departure', request.form['departure'])
+    # return resp
+
+@app.route('/select-ride')
+def select_ride():
+    type = request.args.get('type')
+    date1 = request.args.get('date1')
+    date2 = request.args.get('date2')
+    travelers = request.args.get('travelers')
+    selection = request.args.get('selection')
+    
+    print(type, date1, date2, travelers, selection)
+    
+    return redirect(url_for(rides))
+
 
 @app.route('/arrival')
 def arrival():

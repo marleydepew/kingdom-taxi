@@ -13,8 +13,33 @@ body {
 	margin: 0px;
 }
 
+
 #content {
-	border: 2px solid white;
+	/* margin-top: 150px; */
+	border: 1px solid white;
+	overflow-x: auto;
+}
+
+#content table, tr, th, td {
+	border: 1px solid white;
+	border-collapse: collapse;
+	text-align: left;
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#content a:link, a:visited {
+  background-color: white;
+  color: black;
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+#content a:hover, a:active {
+  background-color: #ffff66;
 }
 
 .content::after {
@@ -37,17 +62,21 @@ div.two-column {
 #head {
 	background-color: #ffff66;
 	color: black;
-	position: fixed;
-	top: 0px;
+	/* position: fixed; */
+	/* top: 0px; */
+	/* margin: 0px; */
 	height: 100px;
 	width: 100%;
 	margin-bottom: 50px;
 }
 
 #head img {
-	position: fixed;
-	left: 10px;
-	top: 0px;
+	/* position: fixed; */
+	/* left: 10px; */
+	/* top: 0px; */
+	/* float: left; */
+	/* margin-left: 10; */
+	/* margin-right: 10; */
 	height: 100px;
 }
 
