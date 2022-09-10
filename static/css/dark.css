@@ -1,0 +1,56 @@
+
+/******* GENERAL *******/
+
+* {
+	box-sizing: border-box;
+	font-family: arial;
+}
+
+body {
+	background-color: black;
+	color: white;
+	padding: 0px;
+	margin: 0px;
+}
+
+#content {
+	border: 2px solid white;
+}
+
+.content::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+div.two-column {
+	width: 50%;
+	float: left;
+	padding: 10px;
+}
+
+.two-column label {
+	float: right;
+}
+
+/******* HEAD *******/
+#head {
+	background-color: #ffff66;
+	color: black;
+	position: fixed;
+	top: 0px;
+	height: 100px;
+	width: 100%;
+	margin-bottom: 50px;
+}
+
+#head img {
+	position: fixed;
+	left: 10px;
+	top: 0px;
+	height: 100px;
+}
+
+#head h1 {
+	text-align: center;
+}

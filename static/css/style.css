@@ -1,0 +1,45 @@
+
+/******* TAXI CAB THEME *******/
+body {
+  background-image: url("../images/checker.png");
+  background-repeat: repeat;
+  background-attachment: fixed;
+}
+
+div.content {
+	border: 2px solid black;
+	border-radius: 5px;
+	background-color: yellow;
+	padding: 10px;
+	margin: auto;
+	width: 80%;
+}
+
+div.spacer {
+	margin: 10px;
+}
+
+p, form {
+	text-align: center;
+}
+
+.center {
+	margin: auto;
+}	
+
+/******* TABLE STYLE *******/
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+td, th {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #dddddd;
+}

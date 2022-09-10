@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kingdom Taxi - Home</title>
+		<link href="/static/css/dark.css" rel="stylesheet" >
+		<script type = "text/javascript" 
+			src = "{{ url_for('static', filename = 'hello.js') }}" ></script>
+		
+		<!-- This merely hides the second date if One Way Trip is selected -->
+		<script>
+			function hideDate() {
+				var x = document.getElementById("type").value;
+				if (x == 1) {
+					document.getElementById("date1-label").innerHTML = "Date:";
+					document.getElementById("date2-div-label").style.display = "none";
+					document.getElementById("date2-div-input").style.display = "none";
+				} else {
+					document.getElementById("date1-label").innerHTML = "First Date:";
+					document.getElementById("date2-div-label").style.display = "initial";
+					document.getElementById("date2-div-input").style.display = "initial";
+				}
+			}
+		</script>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		
+		<!-- head -->
+		<div id = "head">
+			<img src = "/static/images/Taxi-Cab-PNG-HD.png" alt = "Taxi Cab">
+			<h1>KINGDOM TAXI</h1>
+		</div>
+
+		<!-- content -->
+		<div id = "content">
+			<form action = "http://localhost/rides" method = "get">
+				
+				<div class = "two-column">
+					<label for = "type">Trip Type:</label>
+				</div>
+				<div class = "two-column">
+					<select id = "type" name = "type" onchange = "hideDate()">
+						<option value = 1>One way</option>
+						<option value = 2 selected>Round trip</option>
+					</select>
+				</div>
+
+				<div class = "two-column">
+					<label for = "date1" id = "date1-label">First Date:</label>
+				</div>
+				<div class = "two-column">
+					<input type = "date" id = "date1" name = "date1" value = "2022-08-11" />
+				</div>
+
+				<div class = "two-column" id = "date2-div-label">
+					<label for = "date2">Second Date:</label>
+				</div>
+				<div class = "two-column" id = "date2-div-input">
+					<input type = "date" id = "date2" name = "date2" value = "2022-08-14" />
+				</div>
+
+				<div class = "two-column">
+					<label for = "travel">Travelers:</label>
+				</div>
+				<div class = "two-column">
+					<input type = "number" id = "travel" name = "travel" value = "4" min = "1" max = "15" />
+				</div>
+
+				<div class = "two-column">
+				</div>
+				<div class = "two-column">
+					<input type = "submit" value = "View Rides" />
+				</div>
+
+			</form>
+		
+		</div>
+
+		<div class = "spacer">
+		</div>
+		
+		<!-- foot -->
+		<div id = "foot">
+			<img src = "/static/images/Taxi-Cab-PNG-HD.png" alt = "Taxi Cab">
+		</div>
+		
+	</body>
+</html>
