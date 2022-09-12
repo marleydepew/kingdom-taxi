@@ -118,11 +118,11 @@ def confirm_request(email, answer):
 def index():
     return render_template('index.html')
 
-@app.route('/rides', methods = ['GET'])
+@app.route('/rides', methods = ['POST'])
 def rides():
     
-    date = request.args.get('date1')
-    travelers = request.args.get('travelers')
+    date = request.form.get('date1')
+    travelers = request.form.get('travelers')
     query_args = (date, int(travelers))
     
     con = sqlite3.connect('kingdom-taxi.db')
@@ -137,31 +137,25 @@ def rides():
     matching_rides.sort(key = sort_rides)
     con.close()
     
-    return render_template('rides.html', data = matching_rides)
-    # resp = make_response(render_template('rides.html'))
-    # resp.set_cookie('type', request.form['type'])
-    # resp.set_cookie('passengers', request.form['passengers'])
-    # resp.set_cookie('arrival', request.form['arrival'])
-    # resp.set_cookie('departure', request.form['departure'])
-    # return resp
+    res = make_response(render_template('rides.html', data = matching_rides))
+    res.set_cookie('type', request.form.get('type'))
+    res.set_cookie('date1', request.form.get('date1'))
+    res.set_cookie('date2', request.form.get('date2'))
+    res.set_cookie('travelers', request.form.get('travelers'))
+    
+    return res
 
-@app.route('/select-ride')
+@app.route('/rides/select')
 def select_ride():
-    type = request.args.get('type')
-    date1 = request.args.get('date1')
-    date2 = request.args.get('date2')
-    travelers = request.args.get('travelers')
-    selection = request.args.get('selection')
-    
-    print(type, date1, date2, travelers, selection)
-    
-    return redirect(url_for(rides))
+    res = make_response(render_template('index.html'))
+    ride1 = request.cookies.get('ride1')
 
-
-@app.route('/arrival')
-def arrival():
-    arrival = request.form
-    return render_template('arrival.html', arrival = arrival)
+    if ride1 == None:
+        res.set_cookie('ride1', request.args.get('ride'))
+    else:
+        res.set_cookie('ride2', request.args.get('ride'))
+        
+    return res
 
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0', port = 80, debug = True)
+    app.run(debug = True, port = 5000)
