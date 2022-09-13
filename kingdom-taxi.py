@@ -121,9 +121,11 @@ def index():
 @app.route('/rides', methods = ['POST'])
 def rides():
     
+    # IF request is post
     date = request.form.get('date1')
     travelers = request.form.get('travelers')
     query_args = (date, int(travelers))
+    # Else load the cookies
     
     con = sqlite3.connect('kingdom-taxi.db')
     cur = con.execute('\
@@ -147,13 +149,27 @@ def rides():
 
 @app.route('/rides/select')
 def select_ride():
-    res = make_response(render_template('index.html'))
+    type = request.cookies.get('type')
     ride1 = request.cookies.get('ride1')
+    selected_ride = request.args.get('ride')
 
+    # If this is the first ride the user is selecting...
     if ride1 == None:
-        res.set_cookie('ride1', request.args.get('ride'))
+    
+        # If this is a one way trip, the user can move on to the next screen.
+        if type == 1:
+            res = make_response(render_template('index.html'))
+            res.set_cookie('ride1', selected_ride)
+    
+        # If this is a two way trip, the user needs to select the next ride.
+        else:
+            res = redirect(url_for('rides'))
+            res.set_cookie('ride1', selected_ride)
+    
+    # This is the second ride selected in a two way trip,
     else:
-        res.set_cookie('ride2', request.args.get('ride'))
+        res = make_response(render_template('index.html'))
+        res.set_cookie('ride2', selected_ride)
         
     return res
 
