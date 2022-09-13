@@ -42,7 +42,7 @@
 							{% for element in ride %}
 								<td> {{ element }} </td>
 							{% endfor %}
-							<td><a href = add_parms(ride)>SELECT</a></td>
+							<td><a href = "rides/select?ride={{ ride }}">SELECT</a></td>
 						</tr>
 					{% endfor %}
 				</table>
