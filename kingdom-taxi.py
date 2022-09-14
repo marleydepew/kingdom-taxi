@@ -119,12 +119,12 @@ def index():
 
     # Clear cookies for slected rides on subsequent screens.
     res = make_response(render_template('index.html'))
-    res.set_cookie('ride1')
-    res.set_cookie('ride2')
+    res.set_cookie('ride1','',0)
+    res.set_cookie('ride2','',0)
 
     return res
 
-@app.route('/list-rides', methods = ['POST'])
+@app.route('/list-rides', methods = ['POST', 'GET'])
 def list_rides():
     
     # If we are coming from index, data is posted from the form.
@@ -167,25 +167,28 @@ def list_rides():
 @app.route('/select-ride')
 def select_ride():
     type = request.cookies.get('type')
-    ride1 = request.cookies.get('ride1','')
+    travelers = request.cookies.get('travelers')
+    ride1 = request.cookies.get('ride1')
     selected_ride = request.args.get('ride')
 
     # If this is the first ride the user is selecting...
-    if ride1 == '':
+    if ride1 == None:
     
-        # If this is a one way trip, the user can move on to the next screen.
-        if type == 1:
-            res = make_response(render_template('index.html'))
+        # If this is a one way trip, the user can move on to the traveler details screen.
+        if int(type) == 1:
+            data = (int(type), int(travelers), eval(selected_ride))
+            res = make_response(render_template('traveler-details.html', data = data))
             res.set_cookie('ride1', selected_ride)
     
-        # If this is a two way trip, the user needs to select the next ride.
+        # If this is a two way trip, the user needs to select the second ride.
         else:
             res = redirect(url_for('list_rides'))
             res.set_cookie('ride1', selected_ride)
     
-    # This is the second ride selected in a two way trip,
+    # This is the second ride selected in a two way trip, proceed to traveler details screen.
     else:
-        res = make_response(render_template('index.html'))
+        data = (int(type), int(travelers), eval(ride1), eval(selected_ride))
+        res = make_response(render_template('traveler-details.html', data = data))
         res.set_cookie('ride2', selected_ride)
         
     return res

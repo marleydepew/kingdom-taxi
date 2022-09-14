@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kingdom Taxi - Traveler Details</title>
+		<link href="/static/css/dark.css" rel="stylesheet" >
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	<body>
+		
+		<!-- head -->
+		<div id = "head">
+			<a href = '/' ><img src = "/static/images/Taxi-Cab-PNG-HD.png" alt = "Taxi Cab"></a>
+		</div>
+		
+		<!-- content -->
+		<div id = "content">
+			{% set type = data[0] %}
+			{% set travelers = data[1] %}
+			{% set ride1 = data[2] %}
+
+			<!-- This DIV Displays ride1 -->
+			<div class = "flex-container">
+				{% set driver1 = ride1[0] %}
+				{% set date1 = ride1[1] %}
+				{% set time1 = ride1[2] %}
+				{% set available1 = ride1[3] %}
+
+				<div><h5>DRIVER</h5><P>{{ driver1 }}</P></div>
+				<div><h5>DATE</h5><P>{{ date1 }}</P></div>
+				<div><h5>TIME</h5><P>{{ time1 }}</P></div>
+				<div><h5>AVAILABLE</h5><P>{{ available1 }}</P></div>
+				<div><h5>TRAVELERS</h5><P>{{ travelers }}</P></div>
+				
+			</div>
+		
+			<!-- This DIV displays ride2 -->
+			{% if type == 2 %}
+				<div class = "flex-container">
+					{% set ride2 = data[3] %}
+					{% set driver2 = ride2[0] %}
+					{% set date2 = ride2[1] %}
+					{% set time2 = ride2[2] %}
+					{% set available2 = ride2[3] %}
+	
+					<div><h5>DRIVER</h5><P>{{ driver2 }}</P></div>
+					<div><h5>DATE</h5><P>{{ date2 }}</P></div>
+					<div><h5>TIME</h5><P>{{ time2 }}</P></div>
+					<div><h5>AVAILABLE</h5><P>{{ available2 }}</P></div>
+					<div><h5>TRAVELERS</h5><P>{{ travelers }}</P></div>
+		
+				</div>
+			{% endif %}
+			
+		</div>
+	</body>
+</html>

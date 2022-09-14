@@ -48,7 +48,7 @@ body {
   display: table;
 }
 
-div.two-column {
+.two-column {
 	width: 50%;
 	float: left;
 	padding: 10px;
@@ -56,6 +56,23 @@ div.two-column {
 
 .two-column label {
 	float: right;
+}
+
+.flex-container {
+	display: flex;
+	align-items: stretch;
+	background-image: linear-gradient(to bottom right, white, #ffff66);
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 50px;
+}
+
+.flex-container > div {
+	padding: 10px;
+	color: black;
+	text-align: center;
+	flex-grow: 1;
 }
 
 /******* HEAD *******/
