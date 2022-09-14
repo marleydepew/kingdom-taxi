@@ -116,45 +116,62 @@ def confirm_request(email, answer):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
 
-@app.route('/rides', methods = ['POST'])
-def rides():
+    # Clear cookies for slected rides on subsequent screens.
+    res = make_response(render_template('index.html'))
+    res.set_cookie('ride1')
+    res.set_cookie('ride2')
+
+    return res
+
+@app.route('/list-rides', methods = ['POST'])
+def list_rides():
     
-    # IF request is post
-    date = request.form.get('date1')
-    travelers = request.form.get('travelers')
+    # If we are coming from index, data is posted from the form.
+    #   Ride1 needs to be selected.
+    # Else the data is already saved in the cookies.
+    #   Ride2 needs to be selected.
+    if request.method == 'POST':
+        date = request.form.get('date1')
+        travelers = request.form.get('travelers')
+    else:
+        date = request.cookies.get('date2')
+        travelers = request.cookies.get('travelers')
     query_args = (date, int(travelers))
-    # Else load the cookies
     
+    # Select rides from the database.
     con = sqlite3.connect('kingdom-taxi.db')
     cur = con.execute('\
     SELECT driver, date, time, seats - passengers \
     FROM rides \
     WHERE date = ? and (seats - passengers) >= ?', query_args)
     
+    # Save the matching rides into a list.
     matching_rides = []
     for ride in cur:
         matching_rides.append(ride)
     matching_rides.sort(key = sort_rides)
     con.close()
     
-    res = make_response(render_template('rides.html', data = matching_rides))
-    res.set_cookie('type', request.form.get('type'))
-    res.set_cookie('date1', request.form.get('date1'))
-    res.set_cookie('date2', request.form.get('date2'))
-    res.set_cookie('travelers', request.form.get('travelers'))
+    # Send the matching rides to the screen.
+    # Set the basic information cookies if coming from index.
+    res = make_response(render_template('list-rides.html', data = matching_rides))
+    if request.method == 'POST':
+        res.set_cookie('type', request.form.get('type'))
+        res.set_cookie('date1', request.form.get('date1'))
+        res.set_cookie('date2', request.form.get('date2'))
+        res.set_cookie('travelers', request.form.get('travelers'))
     
     return res
 
-@app.route('/rides/select')
+@app.route('/select-ride')
 def select_ride():
     type = request.cookies.get('type')
-    ride1 = request.cookies.get('ride1')
+    ride1 = request.cookies.get('ride1','')
     selected_ride = request.args.get('ride')
 
     # If this is the first ride the user is selecting...
-    if ride1 == None:
+    if ride1 == '':
     
         # If this is a one way trip, the user can move on to the next screen.
         if type == 1:
@@ -163,7 +180,7 @@ def select_ride():
     
         # If this is a two way trip, the user needs to select the next ride.
         else:
-            res = redirect(url_for('rides'))
+            res = redirect(url_for('list_rides'))
             res.set_cookie('ride1', selected_ride)
     
     # This is the second ride selected in a two way trip,
